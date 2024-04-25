@@ -1,3 +1,11 @@
+/**
+ * Hash Set - Early Exit
+ * Time O(N) | Space O(N)
+ * https://leetcode.com/problems/contains-duplicate/
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+
 var containsDuplicate = (nums) => {
   const s = new Set();
   for (const num of nums) {
