@@ -196,6 +196,29 @@ module.exports = (register, helpers) => {
       });
     },
   });
+
+  register({
+    id: "hash-set-as-string",
+    getExtractions(data, collector, context) {
+      if (!(data instanceof Set)) {
+        return;
+      }
+
+      const text = [...data].toString();
+
+      collector.addExtraction({
+        priority: 1000,
+        id: "hash-set-as-string",
+        name: "Hash Set as String",
+        extractData() {
+          return helpers.asData({
+            kind: { text: true },
+            text: text,
+          });
+        },
+      });
+    },
+  });
 };
 
 function transpose(matrix) {
