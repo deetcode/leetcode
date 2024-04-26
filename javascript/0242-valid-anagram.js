@@ -32,6 +32,7 @@ var isAnagram = function (s, t) {
   return true;
 };
 
-const assert = require("assert");
 const res = isAnagram("anagram", "nagaram");
+
+const assert = require("assert");
 assert(res === true);
