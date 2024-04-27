@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@hediet/debug-visualizer-data-extraction": "^0.14.0"
+    "@hediet/debug-visualizer-data-extraction": "^0.14.0",
+    "ascii-table": "^0.0.9"
   }
 }

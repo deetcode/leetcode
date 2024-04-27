@@ -1,3 +1,5 @@
+var AsciiTable = require("ascii-table");
+
 // @ts-check
 /**
  * @type {import("@hediet/debug-visualizer-data-extraction").LoadDataExtractorsFn}
@@ -226,26 +228,66 @@ module.exports = (register, helpers) => {
   });
 
   register({
-    id: "map-as-string",
+    id: "map-as-ascii-table",
     getExtractions(data, collector, context) {
       if (!(data instanceof Map)) {
         return;
       }
 
-      let text = "KEY | VALUE\n-----------\n";
+      var table = new AsciiTable();
 
-      for (const [key, value] of data.entries()) {
-        text += `${key} | ${value}\n`;
+      table.setHeading("key", "value");
+
+      for (const [key, value] of data) {
+        table.addRow(key, value);
       }
 
       collector.addExtraction({
-        priority: 1000,
-        id: "map-as-cli-table",
-        name: "Map as CLI Table",
+        priority: 2000,
+        id: "map-as-ascii-table",
+        name: "Map as Ascii Table",
         extractData() {
           return helpers.asData({
             kind: { text: true },
-            text: text,
+            text: table.toString(),
+          });
+        },
+      });
+    },
+  });
+
+  register({
+    id: "2d-array-as-ascii-table",
+    getExtractions(data, collector, context) {
+      if (!(data instanceof Array)) {
+        return;
+      }
+
+      if (!(data[0] instanceof Array)) {
+        return;
+      }
+
+      const table = new AsciiTable();
+      const headings = [null];
+
+      for (let i = 0; i < data[0].length; i++) {
+        headings.push(i + ":");
+      }
+
+      table.setHeading(...headings);
+
+      for (let i = 0; i < data.length; i++) {
+        table.addRow(i + ":", ...data[i]);
+      }
+
+      collector.addExtraction({
+        priority: 2000,
+        id: "2d-array-as-ascii-table",
+        name: "2d Array as Ascii Table",
+        extractData() {
+          return helpers.asData({
+            kind: { text: true },
+            text: table.toString(),
           });
         },
       });
