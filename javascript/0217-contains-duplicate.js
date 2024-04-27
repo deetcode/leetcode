@@ -7,10 +7,10 @@
  */
 
 var containsDuplicate = (nums) => {
-  const s = new Set();
+  const numSet = new Set();
   for (const num of nums) {
-    if (s.has(num)) return true;
-    s.add(num);
+    if (numSet.has(num)) return true;
+    numSet.add(num);
   }
   return false;
 };

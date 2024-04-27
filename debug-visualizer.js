@@ -4,6 +4,33 @@
  */
 module.exports = (register, helpers) => {
   register({
+    id: "hash-set-as-string",
+    getExtractions(data, collector, context) {
+      if (!(data instanceof Set)) {
+        return;
+      }
+
+      let text = "SET\n-----------\n";
+
+      for (const item of data) {
+        text += `${item}\n`;
+      }
+
+      collector.addExtraction({
+        priority: 1000,
+        id: "hash-set-as-string",
+        name: "Hash Set as String",
+        extractData() {
+          return helpers.asData({
+            kind: { text: true },
+            text: text,
+          });
+        },
+      });
+    },
+  });
+
+  register({
     id: "map-as-table",
     getExtractions(data, collector, context) {
       if (!(data instanceof Map)) {
@@ -18,8 +45,8 @@ module.exports = (register, helpers) => {
           return helpers.asData({
             kind: { table: true },
             rows: [...data].map(([k, v]) => ({
-              key: k,
-              value: v,
+              key: k.toString(),
+              value: v.toString(),
             })),
           });
         },
@@ -113,6 +140,7 @@ module.exports = (register, helpers) => {
                 },
                 cells: {
                   values: [leftHeaders, ...transposed],
+                  align: ["left", "center"],
                 },
                 // @ts-ignore
                 type: "table",
@@ -198,18 +226,22 @@ module.exports = (register, helpers) => {
   });
 
   register({
-    id: "hash-set-as-string",
+    id: "map-as-string",
     getExtractions(data, collector, context) {
-      if (!(data instanceof Set)) {
+      if (!(data instanceof Map)) {
         return;
       }
 
-      const text = [...data].toString();
+      let text = "KEY | VALUE\n-----------\n";
+
+      for (const [key, value] of data.entries()) {
+        text += `${key} | ${value}\n`;
+      }
 
       collector.addExtraction({
         priority: 1000,
-        id: "hash-set-as-string",
-        name: "Hash Set as String",
+        id: "map-as-cli-table",
+        name: "Map as CLI Table",
         extractData() {
           return helpers.asData({
             kind: { text: true },
